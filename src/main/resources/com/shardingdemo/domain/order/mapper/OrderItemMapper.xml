@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shardingdemo.domain.order.mapper.OrderItemMapper">
+    <resultMap id="BaseResultMap" type="com.shardingdemo.domain.order.entity.OrderItem">
+        <id column="order_item_id" jdbcType="BIGINT" property="orderItemId"/>
+        <result column="order_id" jdbcType="BIGINT" property="orderId"/>
+        <result column="order_item" jdbcType="VARCHAR" property="orderItem"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="last_update_date" jdbcType="TIMESTAMP" property="lastUpdateDate"/>
+        <result column="last_update_version" jdbcType="BIGINT" property="lastUpdateVersion"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        order_item_id, order_id, order_item, create_date, last_update_date, last_update_version
+    </sql>
+    <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_order_item
+        where order_item_id = #{orderItemId,jdbcType=BIGINT}
+    </select>
+    <select id="select" parameterType="com.shardingdemo.domain.order.entity.OrderItem" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_order_item
+        <where>
+            <if test="orderItemId != null">
+                and order_item_id = #{orderItemId,jdbcType=BIGINT}
+            </if>
+            <if test="orderId != null">
+                and order_id = #{orderId,jdbcType=BIGINT}
+            </if>
+            <if test="orderItem != null">
+                and order_item = #{orderItem,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        delete from t_order_item
+        where order_item_id = #{orderItemId,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.shardingdemo.domain.order.entity.OrderItem" keyProperty="orderItemId"
+            useGeneratedKeys="true">
+        insert into t_order_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderItemId != null">
+                order_item_id,
+            </if>
+            <if test="orderId != null">
+                order_id,
+            </if>
+            <if test="orderItem != null">
+                order_item,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderItemId != null">
+                #{orderItemId,jdbcType=BIGINT},
+            </if>
+            <if test="orderId != null">
+                #{orderId,jdbcType=BIGINT},
+            </if>
+            <if test="orderItem != null">
+                #{orderItem,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="com.shardingdemo.domain.order.entity.OrderItem">
+        update t_order_item
+        <set>
+            last_update_version=last_update_version+1,
+            <if test="orderId != null">
+                order_id = #{orderId,jdbcType=BIGINT},
+            </if>
+            <if test="orderItem != null">
+                order_item = #{orderItem,jdbcType=VARCHAR},
+            </if>
+            <if test="lastUpdateDate != null">
+                last_update_date = #{lastUpdateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where order_item_id = #{orderItemId,jdbcType=BIGINT}
+        and last_update_version = #{lastUpdateVersion,jdbcType=BIGINT}
+    </update>
+</mapper>
