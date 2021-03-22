@@ -11,8 +11,8 @@ import java.util.Collection;
 public class DatabaseShardingAlgorithm implements PreciseShardingAlgorithm<Long> {
     @Override
     public String doSharding(Collection<String> targetDbs, PreciseShardingValue<Long> preciseShardingValue) {
-        // sharding读写分离有问题，如果写表和读表如果在同一个方法中
-        // 程序执行的速度很有可能比binlog同步还快
+        // sharding读写分离有问题，如果写表和读表如果在同一个动作中
+        // 程序执行的速度很有可能比binlog同步还快,刚写入的数据查从库可能查不到
         // 同步一般在不同服务器，会有网络时延
         // 这里可根据此标识来判断切换主还是从
         System.out.println(DataSourceMsContextHolder.getDataSourceType());
