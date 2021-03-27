@@ -21,7 +21,8 @@ public class OrderService {
         return orderDomainService.getOrder(id);
     }
 
-    // @SlaveDataSource 放开注解报错则说明正常
+    // 放开注解报错则说明正常
+    // @SlaveDataSource
     @ServiceMethodLog
     public int saveOrder(Order order) {
         return orderDomainService.saveOrder(order);
