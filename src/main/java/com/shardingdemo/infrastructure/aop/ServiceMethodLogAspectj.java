@@ -1,5 +1,6 @@
 package com.shardingdemo.infrastructure.aop;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -40,6 +41,6 @@ public class ServiceMethodLogAspectj {
     }
 
     private void doLog(String clazz, String method, String type, Object params) {
-        log.info("{}.{} {} Execute: param:{}", clazz, method, type, params);
+        log.info("{}.{} {} Execute param:{}", clazz, method, type, JSONObject.toJSONString(params));
     }
 }
