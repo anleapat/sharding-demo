@@ -4,7 +4,7 @@ import com.shardingdemo.domain.order.OrderDomainService;
 import com.shardingdemo.domain.order.entity.Order;
 import com.shardingdemo.domain.order.entity.OrderItem;
 import com.shardingdemo.infrastructure.aop.ServiceMethodLog;
-import com.shardingdemo.infrastructure.aop.TargetDataSource;
+import com.shardingdemo.infrastructure.aop.SlaveDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +15,13 @@ public class OrderService {
     @Autowired
     OrderDomainService orderDomainService;
 
-    @TargetDataSource
+    @SlaveDataSource
     @ServiceMethodLog
     public Order getOrder(Long id) {
         return orderDomainService.getOrder(id);
     }
 
+    // @SlaveDataSource 放开注解报错则说明正常
     @ServiceMethodLog
     public int saveOrder(Order order) {
         return orderDomainService.saveOrder(order);

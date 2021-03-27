@@ -1,5 +1,6 @@
 package com.shardingdemo.infrastructure.aop;
 
+import com.shardingdemo.infrastructure.constants.ShardingDemoConstant;
 import com.shardingdemo.infrastructure.util.DataSourceMsContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -15,12 +16,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class TargetDataSourceAspectj {
     @Before("@annotation(ds)")
-    public void before(JoinPoint joinPoint, TargetDataSource ds) {
-        DataSourceMsContextHolder.setDataSourceType("slave");
+    public void before(JoinPoint joinPoint, SlaveDataSource ds) {
+        DataSourceMsContextHolder.setDataSourceType(ShardingDemoConstant.SLAVE_DB_PREFIX);
     }
 
     @After("@annotation(ds)")
-    public void after(JoinPoint joinPoint, TargetDataSource ds) {
+    public void after(JoinPoint joinPoint, SlaveDataSource ds) {
         DataSourceMsContextHolder.clearDataSourceType();
     }
 }
