@@ -31,6 +31,8 @@ public class ShardingJdbcTest {
             orderService.saveOrder(order);
             log.info("order info={}", order);
 
+            Order order1 = orderService.getOrder(order.getOrderId());
+            log.info("get order1 info test={}", order1);
 
             OrderItem orderItem = new OrderItem();
             orderItem.setOrderId(order.getOrderId());
