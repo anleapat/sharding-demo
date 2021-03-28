@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class TargetDataSourceAspectj {
     @Before("@annotation(ds)")
     public void before(JoinPoint joinPoint, SlaveDataSource ds) {
+        log.info("current thread using datasource type: {}", ShardingDemoConstant.SLAVE_DB_PREFIX);
         DataSourceMsContextHolder.setDataSourceType(ShardingDemoConstant.SLAVE_DB_PREFIX);
     }
 

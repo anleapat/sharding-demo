@@ -2,12 +2,14 @@ package com.shardingdemo.infrastructure.sharding;
 
 import com.shardingdemo.infrastructure.constants.ShardingDemoConstant;
 import com.shardingdemo.infrastructure.util.DataSourceMsContextHolder;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.api.sharding.standard.PreciseShardingAlgorithm;
 import org.apache.shardingsphere.api.sharding.standard.PreciseShardingValue;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Collection;
 
+@Slf4j
 @Configuration
 public class DatabaseShardingAlgorithm implements PreciseShardingAlgorithm<Long> {
     private final static String MASTER_DB_PREFIX = "master";
@@ -23,20 +25,23 @@ public class DatabaseShardingAlgorithm implements PreciseShardingAlgorithm<Long>
         Long orderId = preciseShardingValue.getValue();
         Long mod = orderId % 2;
         for (String ds : targetDbs) {
-            if (isMaster(ds, mod) || isSlave(ds, mod)) {
+            boolean isMaster = selectMaster(ds, mod);
+            boolean isSlave = selectSlave(ds, mod);
+            if (isMaster || isSlave) {
+                log.info("current thread using datasource: {}", ds);
                 return ds;
             }
         }
         return null;
     }
 
-    private boolean isMaster(String ds, Long mod) {
+    private boolean selectMaster(String ds, Long mod) {
         return !ShardingDemoConstant.SLAVE_DB_PREFIX.equals(DataSourceMsContextHolder.getDataSourceType())
                 && ds.startsWith(ShardingDemoConstant.MASTER_DB_PREFIX)
                 && ds.endsWith(mod.toString());
     }
 
-    private boolean isSlave(String ds, Long mod) {
+    private boolean selectSlave(String ds, Long mod) {
         return ShardingDemoConstant.SLAVE_DB_PREFIX.equals(DataSourceMsContextHolder.getDataSourceType())
                 && ds.startsWith(ShardingDemoConstant.SLAVE_DB_PREFIX)
                 && ds.endsWith(mod.toString());
